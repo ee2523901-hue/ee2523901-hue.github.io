@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>設計精準，驅動創新 | Kinetic Spin Portfolio</title>
+    <meta name="description" content="個人數位產品設計與網頁開發作品集，融合 Kinetic Spin 科技美學，提供極致的前端體驗與創新技術展示。">
+    <!-- Google Font: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Particle Background Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Navigation Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-spin"></div>
+                <span>KINETIC<span class="highlight">SPIN</span></span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="切換選單">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <nav class="nav-links">
+                <a href="#about" class="nav-link">關於我</a>
+                <a href="#projects" class="nav-link">精選專案</a>
+                <a href="#skills" class="nav-link">專業技能</a>
+                <a href="#contact" class="nav-link">聯絡合作</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="hero-section">
+            <div class="grid-container hero-grid">
+                <div class="hero-content">
+                    <div class="tech-chip">
+                        <span class="pulse-dot"></span>
+                        <span>PORTFOLIO v1.0 // ACTIVE</span>
+                    </div>
+                    <h1 class="hero-title">設計精準，<br><span class="gradient-text">驅動創新</span></h1>
+                    <p class="hero-subtitle">
+                        我是數位產品設計師與前端開發工程師，專注於打造具備流暢互動體驗、嚴謹代碼架構與未來感視覺美學的網頁與應用程式。
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#contact" class="btn btn-primary">與我聯絡</a>
+                        <a href="#projects" class="btn btn-secondary">瀏覽專案</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="kinetic-spin-core" id="kineticCore">
+                        <!-- Concentric Rotating Cyber Rings -->
+                        <div class="ring outer-ring"></div>
+                        <div class="ring mid-ring"></div>
+                        <div class="ring inner-ring"></div>
+                        <div class="core-node">
+                            <svg viewBox="0 0 100 100" class="core-svg">
+                                <circle cx="50" cy="50" r="15" fill="none" stroke="#00d4ff" stroke-width="2" stroke-dasharray="4, 4" class="pulse-circle" />
+                                <polygon points="50,30 67,60 33,60" fill="none" stroke="#00ffd8" stroke-width="2" class="spin-polygon" />
+                            </svg>
+                        </div>
+                        <!-- Tech HUD overlays -->
+                        <div class="hud-scanner"></div>
+                        <div class="hud-angle-indicator top-left"></div>
+                        <div class="hud-angle-indicator top-right"></div>
+                        <div class="hud-angle-indicator bottom-left"></div>
+                        <div class="hud-angle-indicator bottom-right"></div>
+                        <!-- Floating Tech Tags -->
+                        <span class="floating-tag tag-1">REACT</span>
+                        <span class="floating-tag tag-2">UI/UX</span>
+                        <span class="floating-tag tag-3">CANVAS</span>
+                        <span class="floating-tag tag-4">FAST</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about" class="about-section scroll-reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">// IDENTITY</span>
+                    <h2 class="section-title">關於我</h2>
+                    <div class="title-bar"></div>
+                </div>
+                <div class="about-grid">
+                    <div class="about-text-panel glass-panel">
+                        <p class="about-paragraph">
+                            熱衷於將複雜的用戶需求與業務邏輯轉化為精美、易用且效能卓越的數位介面。我深信，好的產品設計應該像精密齒輪般運作順暢，同時在視覺上給人深刻的衝擊。
+                        </p>
+                        <p class="about-paragraph">
+                            在開發上，我秉持語意化 HTML、模組化 CSS 與高效能 JavaScript，對動畫渲染細節有極高的敏銳度，能純熟運用 HTML5 Canvas、SVG 動畫以及多種主流前端框架。
+                        </p>
+                    </div>
+                    <div class="metrics-panel">
+                        <div class="metric-card glass-panel">
+                            <span class="metric-num" data-val="5">0</span><span class="metric-plus">+</span>
+                            <span class="metric-label">專業年資</span>
+                        </div>
+                        <div class="metric-card glass-panel">
+                            <span class="metric-num" data-val="30">0</span><span class="metric-plus">+</span>
+                            <span class="metric-label">交付專案</span>
+                        </div>
+                        <div class="metric-card glass-panel">
+                            <span class="metric-num" data-val="100">0</span><span class="metric-plus">%</span>
+                            <span class="metric-label">客戶滿意度</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Works Section -->
+        <section id="projects" class="projects-section scroll-reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">// PORTFOLIO</span>
+                    <h2 class="section-title">精選專案</h2>
+                    <div class="title-bar"></div>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-filter="all">全部專案</button>
+                    <button class="filter-btn" data-filter="webapp">Web 應用</button>
+                    <button class="filter-btn" data-filter="design">UI/UX 設計</button>
+                    <button class="filter-btn" data-filter="game">互動遊戲</button>
+                </div>
+
+                <!-- Projects Grid -->
+                <div class="projects-grid">
+                    <!-- Project 1: Kinetic Analytics Dashboard -->
+                    <div class="project-card glass-panel" data-category="webapp">
+                        <div class="project-image-wrapper">
+                            <img src="./assets/project-spin.png" alt="Kinetic Analytics Dashboard 專案縮圖" class="project-image">
+                            <div class="project-overlay">
+                                <a href="#" class="project-link" aria-label="查看專案詳情">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-details">
+                            <span class="project-cat">Web 應用 / 後台系統</span>
+                            <h3 class="project-name">Kinetic 數據分析儀表板</h3>
+                            <p class="project-description">
+                                專為物聯網設備監控設計的即時數據視覺化平台，具備旋轉指針、毛玻璃質感的遙測小工具及深層數據分析報表。
+                            </p>
+                            <div class="tech-tags">
+                                <span class="tech-tag">React</span>
+                                <span class="tech-tag">Tailwind</span>
+                                <span class="tech-tag">Chart.js</span>
+                                <span class="tech-tag">Node.js</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 2: Interactive Physics Engine -->
+                    <div class="project-card glass-panel" data-category="webapp design">
+                        <div class="project-image-wrapper">
+                            <img src="./assets/project-canvas.png" alt="Interactive Physics Engine 專案縮圖" class="project-image">
+                            <div class="project-overlay">
+                                <a href="#" class="project-link" aria-label="查看專案詳情">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-details">
+                            <span class="project-cat">網頁特效 / Canvas</span>
+                            <h3 class="project-name">二維物理引擎實驗室</h3>
+                            <p class="project-description">
+                                基於 HTML5 Canvas 的輕量級物理引擎，模擬剛體動力學、粒子碰撞網絡與向量場疊加，提供流暢的 60fps 網頁運算。
+                            </p>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Vanilla JS</span>
+                                <span class="tech-tag">Canvas</span>
+                                <span class="tech-tag">SVG Animation</span>
+                                <span class="tech-tag">Math.js</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 3: Cyber Table Tennis -->
+                    <div class="project-card glass-panel" data-category="game">
+                        <div class="project-image-wrapper">
+                            <img src="./assets/project-game.png" alt="Cyber Table Tennis 專案縮圖" class="project-image">
+                            <div class="project-overlay">
+                                <a href="#" class="project-link" aria-label="查看專案詳情">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-details">
+                            <span class="project-cat">網頁遊戲 / WebGL</span>
+                            <h3 class="project-name">極速光輪桌球賽</h3>
+                            <p class="project-description">
+                                賽博龐克風格的網頁街機桌球遊戲，採用進階碰撞預測算法、智慧 AI 對手與沉浸式音效同步特效。
+                            </p>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Vue.js</span>
+                                <span class="tech-tag">Canvas API</span>
+                                <span class="tech-tag">Web Audio</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="skills-section scroll-reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">// CAPABILITIES</span>
+                    <h2 class="section-title">專業技能</h2>
+                    <div class="title-bar"></div>
+                </div>
+
+                <div class="skills-grid">
+                    <!-- Tech Skill Categories -->
+                    <div class="skill-category glass-panel">
+                        <h3 class="category-title">前端開發</h3>
+                        <div class="skills-list">
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>HTML5 / CSS3 / ES6+</span>
+                                    <span>95%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 95%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>React.js / Vue.js</span>
+                                    <span>90%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 90%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>Canvas / SVG / WebGL</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 85%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category glass-panel">
+                        <h3 class="category-title">產品與設計</h3>
+                        <div class="skills-list">
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>UI/UX 介面設計</span>
+                                    <span>90%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 90%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>原型製作 (Figma)</span>
+                                    <span>92%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 92%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>動態與微互動設計</span>
+                                    <span>88%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 88%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category glass-panel">
+                        <h3 class="category-title">其他技術</h3>
+                        <div class="skills-list">
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>Node.js / RESTful API</span>
+                                    <span>80%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 80%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>Git 版本控制 / Webpack / Vite</span>
+                                    <span>88%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 88%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>效能優化與 SEO</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 85%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact-section scroll-reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">// CONNECT</span>
+                    <h2 class="section-title">聯絡合作</h2>
+                    <div class="title-bar"></div>
+                </div>
+
+                <div class="contact-grid">
+                    <div class="contact-info-panel glass-panel">
+                        <h3 class="panel-subtitle">啟動新專案？</h3>
+                        <p class="panel-desc">
+                            如果您有開發需求、設計項目，或是想聊聊合作機會，歡迎填寫右側表單，我將在 24 小時內與您聯繫。
+                        </p>
+                        <div class="contact-details">
+                            <div class="contact-detail-item">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                <span>contact@kineticspin.design</span>
+                            </div>
+                            <div class="contact-detail-item">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                <span>台灣, 台北市</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-panel glass-panel">
+                        <form id="contactForm" novalidate>
+                            <div class="form-group">
+                                <label for="name" class="form-label">您的姓名</label>
+                                <input type="text" id="name" name="name" class="form-input" placeholder="請輸入姓名" required>
+                                <span class="error-msg" id="nameError">姓名為必填欄位</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="form-label">電子郵件</label>
+                                <input type="email" id="email" name="email" class="form-input" placeholder="example@email.com" required>
+                                <span class="error-msg" id="emailError">請輸入有效的電子郵件地址</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="message" class="form-label">訊息內容</label>
+                                <textarea id="message" name="message" class="form-input form-textarea" placeholder="說說您的專案構想..." required></textarea>
+                                <span class="error-msg" id="messageError">訊息內容不能為空</span>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <span>發送訊息</span>
+                                <div class="btn-glow"></div>
+                            </button>
+                        </form>
+                        <!-- Form Success Overlay -->
+                        <div class="form-success-overlay" id="formSuccess">
+                            <div class="success-icon">✓</div>
+                            <h3>發送成功！</h3>
+                            <p>感謝您的聯絡，我會盡快回覆您。</p>
+                            <button class="btn btn-secondary btn-sm" id="closeSuccessBtn">再次填寫</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-info">
+                <p class="footer-logo">KINETIC<span class="highlight">SPIN</span></p>
+                <p class="footer-copyright">&copy; 2026 Kinetic Spin. All Rights Reserved. Designed by Antigravity.</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Github">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="LinkedIn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
