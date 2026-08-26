@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>極速光輪桌球賽 // CYBER SPIN</title>
+    <!-- Google Fonts: Montserrat & Orbitron for digital/arcade feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Orbitron:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0a0d0e;
+            --bg-grid: #0d1214;
+            --accent-cyan: #00d4ff;
+            --accent-cyan-glow: rgba(0, 212, 255, 0.4);
+            --accent-pink: #ff007f;
+            --accent-pink-glow: rgba(255, 0, 127, 0.4);
+            --accent-teal: #00ffd8;
+            --text-primary: #ffffff;
+            --text-secondary: #8c9fa5;
+            --glass-border: rgba(0, 212, 255, 0.15);
+            --glass-bg: rgba(10, 13, 14, 0.7);
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Particle Canvas background */
+        #bgCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Container styling */
+        .game-wrapper {
+            width: 95%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        /* Glassmorphism Headers & Panels */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 15px 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5),
+                        inset 0 0 15px rgba(0, 212, 255, 0.05);
+        }
+
+        .header-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-pulse {
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-cyan);
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from {
+                transform: scale(0.8);
+                box-shadow: 0 0 6px var(--accent-cyan);
+            }
+            to {
+                transform: scale(1.2);
+                box-shadow: 0 0 16px var(--accent-cyan), 0 0 25px var(--accent-cyan);
+            }
+        }
+
+        .game-title {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ffffff, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn {
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid var(--accent-cyan);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: var(--font-body);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            letter-spacing: 0.05em;
+        }
+
+        .btn:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px var(--accent-cyan-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 24px;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .selector-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .diff-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-secondary);
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .diff-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--text-primary);
+        }
+
+        .diff-btn.active {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+        }
+
+        .stats-display {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-item {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            color: var(--accent-cyan);
+            margin-left: 5px;
+        }
+
+        /* Screen & CRT Effects */
+        .screen-container {
+            position: relative;
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6),
+                        0 0 30px rgba(0, 212, 255, 0.05);
+        }
+
+        /* CRT Overlay Scanlines */
+        .screen-container::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* CRT Screen Flicker */
+        @keyframes flicker {
+            0% { opacity: 0.985; }
+            50% { opacity: 0.995; }
+            100% { opacity: 0.985; }
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 800 / 500;
+            background-color: #0b0e10;
+            cursor: none;
+            animation: flicker 0.15s infinite;
+        }
+
+        /* Shake animation for canvas on collision */
+        .shake {
+            animation: screen-shake 0.15s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes screen-shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 1px, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, -1px, 0); }
+            40%, 60% { transform: translate3d(4px, 1px, 0); }
+        }
+
+        /* Instructions Footer */
+        .footer-panel {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+            line-height: 1.5;
+        }
+
+        .key-hint {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--accent-cyan);
+            margin: 0 2px;
+        }
+
+        /* Interactive controls for audio */
+        .audio-btn {
+            background: transparent;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: var(--accent-cyan);
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .audio-btn:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+        }
+
+        .audio-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        @media (max-width: 768px) {
+            .header-panel {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            .controls-panel {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .difficulty-selector {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Space/Grid Background FX -->
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="game-wrapper">
+        <!-- Top Nav & Logo Panel -->
+        <header class="glass-panel header-panel">
+            <div class="logo-section">
+                <div class="logo-pulse"></div>
+                <h1 class="game-title">極速光輪桌球賽</h1>
+            </div>
+            
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <!-- Audio Synthesis Toggle -->
+                <button id="audioToggleBtn" class="audio-btn" aria-label="切換音效">
+                    <svg id="soundOnIcon" viewBox="0 0 24 24">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                    <svg id="soundOffIcon" viewBox="0 0 24 24" style="display: none;">
+                        <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                    </svg>
+                </button>
+
+                <!-- Back button to main portfolio -->
+                <a href="index.html" class="btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    返回首頁
+                </a>
+            </div>
+        </header>
+
+        <!-- Configuration Bar -->
+        <section class="glass-panel controls-panel">
+            <!-- Difficulty settings -->
+            <div class="difficulty-selector">
+                <span class="selector-label">對手強度 // AI:</span>
+                <button class="diff-btn" data-diff="easy">初階</button>
+                <button class="diff-btn active" data-diff="medium">中階</button>
+                <button class="diff-btn" data-diff="hard">高階</button>
+                <button class="diff-btn" data-diff="expert">極限</button>
+            </div>
+
+            <!-- Score statistics -->
+            <div class="stats-display">
+                <div class="stat-item">最高分 <span id="highScoreText" class="stat-value">0</span></div>
+                <div class="stat-item">局數 <span id="matchCountText" class="stat-value">0</span></div>
+            </div>
+        </section>
+
+        <!-- Main Game CRT Screen Container -->
+        <main class="screen-container" id="screenContainer">
+            <canvas id="gameCanvas" width="800" height="500"></canvas>
+        </main>
+
+        <!-- Navigation instructions -->
+        <footer class="glass-panel footer-panel">
+            <div>
+                操作說明：滑鼠上下滑動可直接控制球拍，或使用鍵盤 <span class="key-hint">W</span> / <span class="key-hint">S</span> 或方向鍵 <span class="key-hint">↑</span> / <span class="key-hint">↓</span> 控制。
+            </div>
+            <div style="margin-top: 5px; color: var(--accent-cyan); font-weight: 600;">
+                對手難度設為「極限 (EXPERT)」時，AI 對手會啟用物理碰撞軌跡預測演算！
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ==========================================================================
+        // 1. Particle Background System
+        // ==========================================================================
+        const bgCanvas = document.getElementById('bgCanvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let bgParticles = [];
+
+        function resizeBgCanvas() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeBgCanvas);
+        resizeBgCanvas();
+
+        class BgParticle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * bgCanvas.height;
+            }
+
+            reset() {
+                this.x = Math.random() * bgCanvas.width;
+                this.y = 0;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speed = Math.random() * 0.4 + 0.1;
+                this.alpha = Math.random() * 0.3 + 0.1;
+                this.color = Math.random() > 0.5 ? '0, 212, 255' : '255, 0, 127';
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.y > bgCanvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                bgCtx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
+                bgCtx.beginPath();
+                bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                bgCtx.fill();
+            }
+        }
+
+        // Initialize particles
+        for (let i = 0; i < 40; i++) {
+            bgParticles.push(new BgParticle());
+        }
+
+        function animateBg() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            bgCtx.fillStyle = 'rgba(10, 13, 14, 0.15)'; // faint persistence
+            bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+            
+            // Draw faint grids
+            bgCtx.strokeStyle = 'rgba(0, 212, 255, 0.015)';
+            bgCtx.lineWidth = 1;
+            const size = 60;
+            for(let x = 0; x < bgCanvas.width; x += size) {
+                bgCtx.beginPath();
+                bgCtx.moveTo(x, 0);
+                bgCtx.lineTo(x, bgCanvas.height);
+                bgCtx.stroke();
+            }
+            for(let y = 0; y < bgCanvas.height; y += size) {
+                bgCtx.beginPath();
+                bgCtx.moveTo(0, y);
+                bgCtx.lineTo(bgCanvas.width, y);
+                bgCtx.stroke();
+            }
+
+            bgParticles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateBg);
+        }
+        animateBg();
+
+
+        // ==========================================================================
+        // 2. Synthesized Sound System (Web Audio API)
+        // ==========================================================================
+        let audioCtx = null;
+        let isMuted = false;
+
+        // Initialize Web Audio Context on interaction
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // SFX Play Function
+        function playSound(type) {
+            if (isMuted) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'hit-player') {
+                // Short, energetic retro cyber sound
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(261.63, now); // C4
+                osc.frequency.exponentialRampToValueAtTime(523.25, now + 0.08); // C5
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            } 
+            else if (type === 'hit-ai') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(329.63, now); // E4
+                osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.08); // E5
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            } 
+            else if (type === 'hit-wall') {
+                // Low pitch bounce
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(150, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+                osc.start(now);
+                osc.stop(now + 0.06);
+            } 
+            else if (type === 'score-player') {
+                // Retro arcade coin chime (2-step note)
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } 
+            else if (type === 'score-ai') {
+                // Descending synthetic defeat siren
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.linearRampToValueAtTime(110, now + 0.35);
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            }
+            else if (type === 'victory') {
+                // Dynamic futuristic arpeggio chime
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, C arpeggio
+                notes.forEach((freq, idx) => {
+                    const noteOsc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+                    noteOsc.connect(noteGain);
+                    noteGain.connect(audioCtx.destination);
+                    
+                    noteOsc.type = 'sawtooth';
+                    noteOsc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                    noteGain.gain.setValueAtTime(0.06, now + idx * 0.1);
+                    noteGain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.1 + 0.25);
+                    
+                    noteOsc.start(now + idx * 0.1);
+                    noteOsc.stop(now + idx * 0.1 + 0.3);
+                });
+            }
+            else if (type === 'gameover') {
+                // Heavy digital crash sweep
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.6);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+                osc.start(now);
+                osc.stop(now + 0.7);
+            }
+        }
+
+
+        // ==========================================================================
+        // 3. Game Variables & Canvas Setups
+        // ==========================================================================
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const screenContainer = document.getElementById('screenContainer');
+
+        // Logic Resolutions (Fixed for math predictability)
+        const WIDTH = 800;
+        const HEIGHT = 500;
+
+        // Sound Controls
+        const audioBtn = document.getElementById('audioToggleBtn');
+        const soundOnIcon = document.getElementById('soundOnIcon');
+        const soundOffIcon = document.getElementById('soundOffIcon');
+
+        // Stats elements
+        const highScoreText = document.getElementById('highScoreText');
+        const matchCountText = document.getElementById('matchCountText');
+
+        // Persistent stats from LocalStorage
+        let highScore = parseInt(localStorage.getItem('cyberTennisHighScore') || '0', 10);
+        let matchCount = parseInt(localStorage.getItem('cyberTennisMatchCount') || '0', 10);
+        highScoreText.textContent = highScore;
+        matchCountText.textContent = matchCount;
+
+        // Difficulty Settings
+        const difficultySettings = {
+            easy: { aiSpeed: 3.5, aiReactChance: 0.75, maxBallSpeed: 10, predict: false },
+            medium: { aiSpeed: 5.5, aiReactChance: 0.88, maxBallSpeed: 12, predict: false },
+            hard: { aiSpeed: 7.2, aiReactChance: 0.95, maxBallSpeed: 15, predict: false },
+            expert: { aiSpeed: 8.8, aiReactChance: 1.0, maxBallSpeed: 20, predict: true }
+        };
+        let currentDiff = 'medium';
+
+        // Sound click listener
+        audioBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            if (isMuted) {
+                soundOnIcon.style.display = 'none';
+                soundOffIcon.style.display = 'block';
+            } else {
+                soundOnIcon.style.display = 'block';
+                soundOffIcon.style.display = 'none';
+                initAudio();
+                playSound('hit-player');
+            }
+        });
+
+        // Difficulty Buttons listener
+        const diffBtns = document.querySelectorAll('.diff-btn');
+        diffBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                diffBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentDiff = btn.getAttribute('data-diff');
+                initAudio();
+                playSound('hit-ai');
+                resetGame();
+            });
+        });
+
+        // Game States
+        const STATE = {
+            START: 0,
+            PLAYING: 1,
+            PAUSED: 2,
+            GAMEOVER: 3,
+            VICTORY: 4
+        };
+        let gameState = STATE.START;
+
+        // Game Objects
+        const player = {
+            x: 25,
+            y: HEIGHT / 2 - 45,
+            w: 12,
+            h: 90,
+            score: 0,
+            targetY: HEIGHT / 2 - 45,
+            speed: 12,
+            color: '#00d4ff'
+        };
+
+        const ai = {
+            x: WIDTH - 25 - 12,
+            y: HEIGHT / 2 - 45,
+            w: 12,
+            h: 90,
+            score: 0,
+            targetY: HEIGHT / 2 - 45,
+            color: '#ff007f'
+        };
+
+        const ball = {
+            x: WIDTH / 2,
+            y: HEIGHT / 2,
+            radius: 8,
+            speed: 6,
+            vx: 6,
+            vy: 3,
+            trail: [],
+            trailLength: 8,
+            color: '#ffffff'
+        };
+
+        // Collision Particle System
+        let particles = [];
+        class CollisionParticle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 4 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.size = Math.random() * 3 + 1.5;
+                this.color = color;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.03 + 0.015;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Screen Shake Trigger
+        function triggerScreenShake() {
+            screenContainer.classList.add('shake');
+            setTimeout(() => {
+                screenContainer.classList.remove('shake');
+            }, 150);
+        }
+
+        // Helper to grab CSS variable values
+        function varColor(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+
+        // Keyboard Controls
+        const keys = {};
+        window.addEventListener('keydown', e => {
+            keys[e.key] = true;
+            if (e.key === ' ' || e.key === 'p' || e.key === 'P') {
+                if (gameState === STATE.PLAYING) {
+                    gameState = STATE.PAUSED;
+                    playSound('hit-wall');
+                } else if (gameState === STATE.PAUSED) {
+                    gameState = STATE.PLAYING;
+                    playSound('hit-player');
+                }
+            }
+        });
+        window.addEventListener('keyup', e => {
+            keys[e.key] = false;
+        });
+
+        // Mouse Controls
+        canvas.addEventListener('mousemove', e => {
+            const rect = canvas.getBoundingClientRect();
+            // Scaling coordinates due to dynamic width/height CSS layout
+            const scaleY = HEIGHT / rect.height;
+            const mouseY = (e.clientY - rect.top) * scaleY;
+            player.targetY = mouseY - player.h / 2;
+        });
+
+        // Touch Controls
+        canvas.addEventListener('touchmove', e => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const scaleY = HEIGHT / rect.height;
+            const touchY = (e.touches[0].clientY - rect.top) * scaleY;
+            player.targetY = touchY - player.h / 2;
+        }, { passive: false });
+
+        // Start button logic trigger on canvas click
+        canvas.addEventListener('click', () => {
+            initAudio();
+            if (gameState === STATE.START) {
+                gameState = STATE.PLAYING;
+                playSound('hit-player');
+            } else if (gameState === STATE.GAMEOVER || gameState === STATE.VICTORY) {
+                resetGame();
+                player.score = 0;
+                ai.score = 0;
+                gameState = STATE.PLAYING;
+                playSound('hit-player');
+            }
+        });
+
+
+        // ==========================================================================
+        // 4. Game Logic Math Functions
+        // ==========================================================================
+        
+        function resetGame() {
+            // Put ball in the middle
+            ball.x = WIDTH / 2;
+            ball.y = HEIGHT / 2;
+            ball.trail = [];
+            
+            // Randomize ball direction
+            const direction = Math.random() > 0.5 ? 1 : -1;
+            const baseAngle = (Math.random() * 40 - 20) * Math.PI / 180; // random angles between -20 and 20 degrees
+            
+            ball.speed = 6;
+            ball.vx = direction * ball.speed * Math.cos(baseAngle);
+            ball.vy = ball.speed * Math.sin(baseAngle);
+
+            // Centering paddles
+            player.y = HEIGHT / 2 - player.h / 2;
+            ai.y = HEIGHT / 2 - ai.h / 2;
+            player.targetY = player.y;
+            ai.targetY = ai.y;
+        }
+
+        // Advanced AI collision point prediction
+        function predictBallY() {
+            const config = difficultySettings[currentDiff];
+            if (!config.predict) {
+                // Standard mode: track the ball coordinates with delay
+                return ball.y;
+            }
+
+            // Expert predictive tracking: Calculate where the ball will intersect AI paddle line (x = ai.x)
+            if (ball.vx <= 0) {
+                // Ball moving away from AI, return to center
+                return HEIGHT / 2;
+            }
+
+            // Intercept path tracking math:
+            let tempX = ball.x;
+            let tempY = ball.y;
+            let tempVx = ball.vx;
+            let tempVy = ball.vy;
+            const targetX = ai.x;
+            
+            // Simulate ball bounce steps until it reaches targetX
+            let safetyLimit = 0;
+            while (tempX < targetX && safetyLimit < 10) {
+                safetyLimit++;
+                const timeToTarget = (targetX - tempX) / tempVx;
+                
+                // Check if it hits top or bottom wall first
+                let timeToWall = Infinity;
+                let wallY = 0;
+                
+                if (tempVy > 0) {
+                    timeToWall = (HEIGHT - ball.radius - tempY) / tempVy;
+                    wallY = HEIGHT - ball.radius;
+                } else if (tempVy < 0) {
+                    timeToWall = (ball.radius - tempY) / tempVy;
+                    wallY = ball.radius;
+                }
+                
+                if (timeToWall < timeToTarget) {
+                    // Ball hits wall first
+                    tempX += tempVx * timeToWall;
+                    tempY = wallY;
+                    tempVy = -tempVy; // bounce reflection
+                } else {
+                    // Ball reaches paddle line first
+                    tempY += tempVy * timeToTarget;
+                    break;
+                }
+            }
+
+            // Return calculated Y landing zone with a slight randomized offset depending on chance
+            return tempY;
+        }
+
+        function createExplosion(x, y, color) {
+            for (let i = 0; i < 15; i++) {
+                particles.push(new CollisionParticle(x, y, color));
+            }
+        }
+
+        function update() {
+            if (gameState !== STATE.PLAYING) return;
+
+            // 1. Move Player paddle smoothly towards targetY (Lerp for smoothness)
+            if (keys['w'] || keys['W'] || keys['ArrowUp']) {
+                player.targetY -= player.speed;
+            } else if (keys['s'] || keys['S'] || keys['ArrowDown']) {
+                player.targetY += player.speed;
+            }
+            
+            // Clamp target bounds
+            player.targetY = Math.max(0, Math.min(HEIGHT - player.h, player.targetY));
+            // Linear interpolation for cyber fluid paddle movement
+            player.y += (player.targetY - player.y) * 0.22;
+
+            // 2. Smart AI decision tracking
+            const config = difficultySettings[currentDiff];
+            if (Math.random() < config.aiReactChance) {
+                // Find where the AI thinks the ball will go
+                const targetY = predictBallY();
+                ai.targetY = targetY - ai.h / 2;
+            }
+
+            // Smooth AI movement clamp
+            ai.targetY = Math.max(0, Math.min(HEIGHT - ai.h, ai.targetY));
+            const diffY = ai.targetY - ai.y;
+            
+            if (Math.abs(diffY) > 2) {
+                ai.y += Math.sign(diffY) * Math.min(Math.abs(diffY), config.aiSpeed);
+            }
+
+            // 3. Save ball trail trace
+            ball.trail.push({ x: ball.x, y: ball.y });
+            if (ball.trail.length > ball.trailLength) {
+                ball.trail.shift();
+            }
+
+            // 4. Ball physics coordinates update
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            // 5. Wall bounces top/bottom
+            if (ball.y - ball.radius <= 0) {
+                ball.y = ball.radius;
+                ball.vy = -ball.vy;
+                playSound('hit-wall');
+            } else if (ball.y + ball.radius >= HEIGHT) {
+                ball.y = HEIGHT - ball.radius;
+                ball.vy = -ball.vy;
+                playSound('hit-wall');
+            }
+
+            // 6. Check paddle collisions
+            // Left Player Paddle Collision
+            if (ball.vx < 0 && ball.x - ball.radius <= player.x + player.w && ball.x + ball.radius >= player.x) {
+                if (ball.y >= player.y && ball.y <= player.y + player.h) {
+                    // Collided! Calculate bounce trajectory angle based on hitting position relative to center
+                    const relativeIntersectY = (player.y + (player.h / 2)) - ball.y;
+                    const normalizedIntersectY = relativeIntersectY / (player.h / 2);
+                    const bounceAngle = normalizedIntersectY * (Math.PI / 3.5); // Max angle 51 deg
+
+                    // Speed increments on paddle collision
+                    ball.speed = Math.min(config.maxBallSpeed, ball.speed + 0.4);
+                    ball.vx = ball.speed * Math.cos(bounceAngle);
+                    ball.vy = ball.speed * -Math.sin(bounceAngle);
+                    
+                    // Position correction
+                    ball.x = player.x + player.w + ball.radius;
+
+                    createExplosion(ball.x - ball.radius, ball.y, varColor('--accent-cyan'));
+                    triggerScreenShake();
+                    playSound('hit-player');
+                }
+            }
+
+            // Right AI Paddle Collision
+            if (ball.vx > 0 && ball.x + ball.radius >= ai.x && ball.x - ball.radius <= ai.x + ai.w) {
+                if (ball.y >= ai.y && ball.y <= ai.y + ai.h) {
+                    const relativeIntersectY = (ai.y + (ai.h / 2)) - ball.y;
+                    const normalizedIntersectY = relativeIntersectY / (ai.h / 2);
+                    const bounceAngle = normalizedIntersectY * (Math.PI / 3.5);
+
+                    ball.speed = Math.min(config.maxBallSpeed, ball.speed + 0.4);
+                    ball.vx = -ball.speed * Math.cos(bounceAngle);
+                    ball.vy = ball.speed * -Math.sin(bounceAngle);
+
+                    // Position correction
+                    ball.x = ai.x - ball.radius;
+
+                    createExplosion(ball.x + ball.radius, ball.y, varColor('--accent-pink'));
+                    triggerScreenShake();
+                    playSound('hit-ai');
+                }
+            }
+
+            // 7. Check scoring
+            if (ball.x - ball.radius < 0) {
+                // AI scores!
+                ai.score++;
+                createExplosion(10, ball.y, varColor('--accent-pink'));
+                playSound('score-ai');
+                triggerScreenShake();
+                checkMatchEnd();
+            } else if (ball.x + ball.radius > WIDTH) {
+                // Player scores!
+                player.score++;
+                createExplosion(WIDTH - 10, ball.y, varColor('--accent-cyan'));
+                playSound('score-player');
+                triggerScreenShake();
+                checkMatchEnd();
+            }
+
+            // 8. Update collision particles
+            particles.forEach((p, idx) => {
+                p.update();
+                if (p.alpha <= 0) {
+                    particles.splice(idx, 1);
+                }
+            });
+        }
+
+        function checkMatchEnd() {
+            const winCondition = 7;
+            if (player.score >= winCondition) {
+                gameState = STATE.VICTORY;
+                matchCount++;
+                localStorage.setItem('cyberTennisMatchCount', matchCount);
+                matchCountText.textContent = matchCount;
+
+                // Set high score
+                if (player.score > highScore) {
+                    highScore = player.score;
+                    localStorage.setItem('cyberTennisHighScore', highScore);
+                    highScoreText.textContent = highScore;
+                }
+                playSound('victory');
+            } else if (ai.score >= winCondition) {
+                gameState = STATE.GAMEOVER;
+                matchCount++;
+                localStorage.setItem('cyberTennisMatchCount', matchCount);
+                matchCountText.textContent = matchCount;
+                playSound('gameover');
+            } else {
+                resetGame();
+            }
+        }
+
+
+        // ==========================================================================
+        // 5. Canvas Drawing Functions
+        // ==========================================================================
+
+        function drawNet() {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 15]);
+            ctx.beginPath();
+            ctx.moveTo(WIDTH / 2, 0);
+            ctx.lineTo(WIDTH / 2, HEIGHT);
+            ctx.stroke();
+            ctx.setLineDash([]); // Reset
+        }
+
+        function drawPaddle(p, shadowColor) {
+            ctx.save();
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = shadowColor;
+            ctx.fillStyle = p.color;
+            // Draw sleek rounded paddle
+            ctx.beginPath();
+            ctx.roundRect(p.x, p.y, p.w, p.h, 6);
+            ctx.fill();
+            
+            // Add a highlight inner core
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.roundRect(p.x + 4, p.y + 4, p.w - 8, p.h - 8, 3);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawBall() {
+            // Draw fade trails first
+            ball.trail.forEach((pos, idx) => {
+                const alpha = (idx / ball.trail.length) * 0.25;
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = varColor('--accent-cyan');
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = varColor('--accent-cyan');
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, ball.radius * (idx / ball.trail.length), 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+
+            // Draw core ball
+            ctx.save();
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = varColor('--accent-cyan');
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawUI() {
+            // Scores display
+            ctx.font = '900 48px ' + getComputedStyle(document.documentElement).getPropertyValue('--font-display');
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Player Score (Cyan glow)
+            ctx.save();
+            ctx.fillStyle = 'rgba(0, 212, 255, 0.1)';
+            ctx.fillText(player.score, WIDTH / 4, HEIGHT / 2);
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = varColor('--accent-cyan');
+            ctx.fillStyle = varColor('--accent-cyan');
+            ctx.fillText(player.score, WIDTH / 4, 80);
+            ctx.restore();
+
+            // AI Score (Pink glow)
+            ctx.save();
+            ctx.fillStyle = 'rgba(255, 0, 127, 0.1)';
+            ctx.fillText(ai.score, 3 * WIDTH / 4, HEIGHT / 2);
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = varColor('--accent-pink');
+            ctx.fillStyle = varColor('--accent-pink');
+            ctx.fillText(ai.score, 3 * WIDTH / 4, 80);
+            ctx.restore();
+        }
+
+        function drawOverlay(title, subtitle, glowColor, blinkText) {
+            // Dark screen filter overlay
+            ctx.fillStyle = 'rgba(10, 13, 14, 0.85)';
+            ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+            // Center neon text
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Draw Main Title Header
+            ctx.save();
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = glowColor;
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '900 40px ' + getComputedStyle(document.documentElement).getPropertyValue('--font-display');
+            ctx.fillText(title, WIDTH / 2, HEIGHT / 2 - 40);
+            ctx.restore();
+
+            // Draw description subtitle
+            ctx.fillStyle = varColor('--text-secondary');
+            ctx.font = '600 15px ' + getComputedStyle(document.documentElement).getPropertyValue('--font-body');
+            ctx.fillText(subtitle, WIDTH / 2, HEIGHT / 2 + 10);
+
+            // Blinking click-to-start action hint
+            if (blinkText) {
+                const now = Date.now();
+                if (Math.floor(now / 550) % 2 === 0) {
+                    ctx.save();
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = varColor('--accent-cyan');
+                    ctx.fillStyle = varColor('--accent-cyan');
+                    ctx.font = '800 13px ' + getComputedStyle(document.documentElement).getPropertyValue('--font-display');
+                    ctx.fillText(blinkText, WIDTH / 2, HEIGHT / 2 + 75);
+                    ctx.restore();
+                }
+            }
+        }
+
+        function draw() {
+            // Clear screen
+            ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+            // Center dividing net
+            drawNet();
+
+            // Draw game objects
+            drawPaddle(player, varColor('--accent-cyan-glow'));
+            drawPaddle(ai, varColor('--accent-pink-glow'));
+            
+            if (gameState === STATE.PLAYING || gameState === STATE.PAUSED) {
+                drawBall();
+            }
+
+            // Particles
+            particles.forEach(p => p.draw());
+
+            // Scores and HUD text values
+            drawUI();
+
+            // Handle Overlays according to Game States
+            if (gameState === STATE.START) {
+                drawOverlay(
+                    '極速光輪桌球賽 // CYBER SPIN',
+                    '賽博龐克風格街機桌球 • 精密軌跡碰撞演算對手',
+                    varColor('--accent-cyan'),
+                    '點擊畫面開始遊戲 // CLICK TO START'
+                );
+            } 
+            else if (gameState === STATE.PAUSED) {
+                drawOverlay(
+                    '遊戲暫停 // SYSTEM PAUSED',
+                    '使用 [空白鍵] 或 [P] 鍵恢復運算',
+                    varColor('--accent-cyan')
+                );
+            }
+            else if (gameState === STATE.GAMEOVER) {
+                drawOverlay(
+                    '系統超載 // DEFEAT',
+                    `最終比數 ${player.score} : ${ai.score} • 連擊引擎過熱失效`,
+                    varColor('--accent-pink'),
+                    '點擊畫面重新啟動 // CLICK TO RESTART'
+                );
+            }
+            else if (gameState === STATE.VICTORY) {
+                drawOverlay(
+                    '光輪登峰 // VICTORY',
+                    `最終比數 ${player.score} : ${ai.score} • 完美攻破智慧 AI 防線`,
+                    varColor('--accent-teal'),
+                    '點擊畫面再戰一局 // CLICK TO RESET'
+                );
+            }
+        }
+
+
+        // ==========================================================================
+        // 6. Primary Animation Frame Loop
+        // ==========================================================================
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Initialize game configurations
+        resetGame();
+        gameLoop();
+    </script>
+</body>
+</html>
